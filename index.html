@@ -1,0 +1,1907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSIS3754 / CSIS3764 — Python Code Reference</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #13161e;
+    --card: #181c27;
+    --border: #252a38;
+    --accent: #00e5ff;
+    --accent2: #7c3aed;
+    --accent3: #10b981;
+    --accent4: #f59e0b;
+    --accent5: #ef4444;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --code-bg: #0a0c12;
+    --code-text: #a5f3fc;
+    --comment: #4a5568;
+    --keyword: #c084fc;
+    --string: #86efac;
+    --func: #fbbf24;
+    --num: #fb7185;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── HEADER ── */
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(13,15,20,0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    height: 60px;
+  }
+
+  .logo {
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: var(--accent);
+    letter-spacing: -0.5px;
+    white-space: nowrap;
+  }
+
+  .search-wrap {
+    flex: 1;
+    max-width: 400px;
+  }
+
+  #search {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 14px;
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    font-size: 0.85rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  #search:focus { border-color: var(--accent); }
+  #search::placeholder { color: var(--muted); }
+
+  .header-right {
+    margin-left: auto;
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+
+  /* ── LAYOUT ── */
+  .layout {
+    display: flex;
+    min-height: calc(100vh - 60px);
+  }
+
+  /* ── SIDEBAR ── */
+  nav {
+    width: 260px;
+    min-width: 260px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    padding: 20px 0;
+    position: sticky;
+    top: 60px;
+    height: calc(100vh - 60px);
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+
+  .nav-group-title {
+    font-size: 0.65rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 16px 20px 6px;
+  }
+
+  nav a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 20px;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.82rem;
+    font-weight: 600;
+    transition: all 0.15s;
+    border-left: 2px solid transparent;
+  }
+
+  nav a:hover, nav a.active {
+    color: var(--text);
+    border-left-color: var(--accent);
+    background: rgba(0,229,255,0.04);
+  }
+
+  nav a .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* ── MAIN ── */
+  main {
+    flex: 1;
+    padding: 32px 40px;
+    max-width: 1100px;
+  }
+
+  /* ── SECTION ── */
+  .section {
+    margin-bottom: 64px;
+    scroll-margin-top: 80px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 24px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-icon {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+
+  .section-title { font-size: 1.25rem; font-weight: 800; }
+  .section-tag {
+    margin-left: auto;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 20px;
+    opacity: 0.85;
+  }
+
+  /* ── CODE BLOCKS ── */
+  .code-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 16px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .code-card:hover { border-color: rgba(0,229,255,0.25); }
+
+  .code-card-header {
+    display: flex;
+    align-items: center;
+    padding: 10px 16px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    gap: 10px;
+  }
+
+  .code-card-header h3 {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--text);
+    flex: 1;
+  }
+
+  .copy-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: 'Syne', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .copy-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .copy-btn.copied { border-color: var(--accent3); color: var(--accent3); }
+
+  pre {
+    background: var(--code-bg);
+    padding: 20px;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    line-height: 1.7;
+    tab-size: 4;
+  }
+
+  code {
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* Syntax highlight via CSS classes */
+  .kw  { color: var(--keyword); }
+  .fn  { color: var(--func); }
+  .st  { color: var(--string); }
+  .cm  { color: var(--comment); font-style: italic; }
+  .nm  { color: var(--num); }
+  .cl  { color: #60a5fa; }
+  .op  { color: #94a3b8; }
+  .var { color: var(--code-text); }
+
+  /* ── NOTE BOX ── */
+  .note {
+    background: rgba(0,229,255,0.05);
+    border: 1px solid rgba(0,229,255,0.15);
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 0.8rem;
+    color: #94a3b8;
+    margin-bottom: 16px;
+    line-height: 1.6;
+  }
+  .note strong { color: var(--accent); }
+
+  /* ── COLOUR DOTS ── */
+  .c1 { background: var(--accent); }
+  .c2 { background: var(--accent2); }
+  .c3 { background: var(--accent3); }
+  .c4 { background: var(--accent4); }
+  .c5 { background: var(--accent5); }
+  .c6 { background: #ec4899; }
+  .c7 { background: #06b6d4; }
+  .c8 { background: #84cc16; }
+
+  .t1 { background: rgba(0,229,255,0.1); color: var(--accent); border:1px solid rgba(0,229,255,0.25); }
+  .t2 { background: rgba(124,58,237,0.1); color: #c084fc; border:1px solid rgba(124,58,237,0.25); }
+  .t3 { background: rgba(16,185,129,0.1); color: var(--accent3); border:1px solid rgba(16,185,129,0.25); }
+  .t4 { background: rgba(245,158,11,0.1); color: var(--accent4); border:1px solid rgba(245,158,11,0.25); }
+  .t5 { background: rgba(239,68,68,0.1); color: var(--accent5); border:1px solid rgba(239,68,68,0.25); }
+  .t6 { background: rgba(236,72,153,0.1); color: #ec4899; border:1px solid rgba(236,72,153,0.25); }
+  .t7 { background: rgba(6,182,212,0.1); color: #06b6d4; border:1px solid rgba(6,182,212,0.25); }
+  .t8 { background: rgba(132,204,22,0.1); color: #84cc16; border:1px solid rgba(132,204,22,0.25); }
+
+  /* ── HIDDEN ── */
+  .section.hidden { display: none; }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  /* ── TOP BADGE ── */
+  .top-badge {
+    display: inline-block;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+
+  @media(max-width: 900px){
+    nav { display: none; }
+    main { padding: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">⬡ CSIS3754 / 3764 Ref</div>
+  <div class="search-wrap">
+    <input id="search" type="text" placeholder="Search snippets… (e.g. missing, heatmap, SVM)">
+  </div>
+  <div class="header-right">All past papers · 2022–2026</div>
+</header>
+
+<div class="layout">
+
+<!-- ═══════════════════════════════════════════════════════ SIDEBAR -->
+<nav id="sidebar">
+  <div class="nav-group-title">Setup</div>
+  <a href="#imports" class="active"><span class="dot c1"></span>Imports</a>
+  <a href="#read-data"><span class="dot c1"></span>Read Data</a>
+  <a href="#inspect"><span class="dot c1"></span>Inspect / EDA</a>
+  <a href="#columns"><span class="dot c1"></span>Column Operations</a>
+
+  <div class="nav-group-title">Preprocessing</div>
+  <a href="#missing"><span class="dot c3"></span>Missing Values</a>
+  <a href="#outliers"><span class="dot c3"></span>Outliers / Boxplots</a>
+  <a href="#datetime"><span class="dot c3"></span>Date & Time</a>
+  <a href="#shuffle"><span class="dot c3"></span>Shuffle & Reset</a>
+  <a href="#encoding"><span class="dot c4"></span>Encoding</a>
+  <a href="#scaling"><span class="dot c4"></span>Scaling / Normalisation</a>
+  <a href="#balancing"><span class="dot c5"></span>Balancing Data</a>
+  <a href="#feature-eng"><span class="dot c4"></span>Feature Engineering</a>
+
+  <div class="nav-group-title">Visualisation</div>
+  <a href="#viz-bar"><span class="dot c7"></span>Bar Charts</a>
+  <a href="#viz-pie"><span class="dot c7"></span>Pie Charts</a>
+  <a href="#viz-scatter"><span class="dot c7"></span>Scatter Plots</a>
+  <a href="#viz-heatmap"><span class="dot c7"></span>Correlation Heatmap</a>
+  <a href="#viz-misc"><span class="dot c7"></span>Misc Plots</a>
+
+  <div class="nav-group-title">Machine Learning</div>
+  <a href="#split"><span class="dot c2"></span>Train/Test Split</a>
+  <a href="#classifiers"><span class="dot c2"></span>Classifiers</a>
+  <a href="#kfold"><span class="dot c2"></span>K-Fold CV</a>
+  <a href="#learning-curve"><span class="dot c2"></span>Learning Curves</a>
+  <a href="#evaluation"><span class="dot c2"></span>Evaluation Metrics</a>
+  <a href="#dummy"><span class="dot c2"></span>Dummy Classifier</a>
+
+  <div class="nav-group-title">Unsupervised</div>
+  <a href="#kmeans"><span class="dot c6"></span>K-Means Clustering</a>
+  <a href="#elbow-sil"><span class="dot c6"></span>Elbow & Silhouette</a>
+  <a href="#hierarchical"><span class="dot c6"></span>Hierarchical Clustering</a>
+  <a href="#pca"><span class="dot c6"></span>PCA</a>
+
+  <div class="nav-group-title">Theory Questions</div>
+  <a href="#probability"><span class="dot c8"></span>Probability Calcs</a>
+  <a href="#gini"><span class="dot c8"></span>Gini Impurity</a>
+  <a href="#text-nlp"><span class="dot c8"></span>Text / NLP Prep</a>
+  <a href="#export"><span class="dot c8"></span>Export CSV</a>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════ MAIN -->
+<main>
+
+<!-- ─── IMPORTS ─── -->
+<section class="section" id="imports">
+  <div class="section-header">
+    <div class="section-icon t1">📦</div>
+    <h2 class="section-title">Imports</h2>
+    <span class="section-tag t1">Setup</span>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>All Common Imports (paste at top of every notebook)</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="cm"># ── Core ──────────────────────────────────────────</span>
+<span class="kw">import</span> <span class="cl">pandas</span> <span class="kw">as</span> <span class="var">pd</span>
+<span class="kw">import</span> <span class="cl">numpy</span> <span class="kw">as</span> <span class="var">np</span>
+<span class="kw">import</span> <span class="cl">matplotlib.pyplot</span> <span class="kw">as</span> <span class="var">plt</span>
+<span class="kw">import</span> <span class="cl">seaborn</span> <span class="kw">as</span> <span class="var">sns</span>
+
+<span class="cm"># ── Preprocessing ─────────────────────────────────</span>
+<span class="kw">from</span> <span class="cl">sklearn.preprocessing</span> <span class="kw">import</span> <span class="fn">MinMaxScaler</span>, <span class="fn">StandardScaler</span>, <span class="fn">LabelEncoder</span>
+<span class="kw">from</span> <span class="cl">sklearn.model_selection</span> <span class="kw">import</span> <span class="fn">train_test_split</span>, <span class="fn">cross_val_score</span>, <span class="fn">learning_curve</span>
+
+<span class="cm"># ── Classifiers ───────────────────────────────────</span>
+<span class="kw">from</span> <span class="cl">sklearn.naive_bayes</span> <span class="kw">import</span> <span class="fn">GaussianNB</span>
+<span class="kw">from</span> <span class="cl">sklearn.linear_model</span> <span class="kw">import</span> <span class="fn">LogisticRegression</span>
+<span class="kw">from</span> <span class="cl">sklearn.svm</span> <span class="kw">import</span> <span class="fn">SVC</span>
+<span class="kw">from</span> <span class="cl">sklearn.neighbors</span> <span class="kw">import</span> <span class="fn">KNeighborsClassifier</span>
+<span class="kw">from</span> <span class="cl">sklearn.tree</span> <span class="kw">import</span> <span class="fn">DecisionTreeClassifier</span>
+<span class="kw">from</span> <span class="cl">sklearn.ensemble</span> <span class="kw">import</span> <span class="fn">RandomForestClassifier</span>
+<span class="kw">from</span> <span class="cl">sklearn.dummy</span> <span class="kw">import</span> <span class="fn">DummyClassifier</span>
+
+<span class="cm"># ── Evaluation ────────────────────────────────────</span>
+<span class="kw">from</span> <span class="cl">sklearn.metrics</span> <span class="kw">import</span> <span class="fn">accuracy_score</span>, <span class="fn">confusion_matrix</span>, <span class="fn">classification_report</span>, <span class="fn">f1_score</span>
+
+<span class="cm"># ── Clustering ────────────────────────────────────</span>
+<span class="kw">from</span> <span class="cl">sklearn.cluster</span> <span class="kw">import</span> <span class="fn">KMeans</span>
+<span class="kw">from</span> <span class="cl">sklearn.metrics</span> <span class="kw">import</span> <span class="fn">silhouette_score</span>
+<span class="kw">from</span> <span class="cl">sklearn.decomposition</span> <span class="kw">import</span> <span class="fn">PCA</span>
+
+<span class="cm"># ── Balancing ─────────────────────────────────────</span>
+<span class="kw">from</span> <span class="cl">imblearn.over_sampling</span> <span class="kw">import</span> <span class="fn">RandomOverSampler</span>, <span class="fn">SMOTE</span>
+<span class="kw">from</span> <span class="cl">imblearn.under_sampling</span> <span class="kw">import</span> <span class="fn">RandomUnderSampler</span>
+
+<span class="cm"># ── Settings ──────────────────────────────────────</span>
+<span class="var">pd</span>.<span class="fn">set_option</span>(<span class="st">'display.max_columns'</span>, <span class="kw">None</span>)
+<span class="var">pd</span>.<span class="fn">set_option</span>(<span class="st">'display.max_rows'</span>, <span class="nm">100</span>)
+<span class="var">sns</span>.<span class="fn">set_theme</span>(style=<span class="st">'darkgrid'</span>)
+<span class="var">plt</span>.<span class="fn">rcParams</span>[<span class="st">'figure.figsize'</span>] = (<span class="nm">10</span>, <span class="nm">6</span>)</code></pre>
+  </div>
+</section>
+
+<!-- ─── READ DATA ─── -->
+<section class="section" id="read-data">
+  <div class="section-header">
+    <div class="section-icon t1">📂</div>
+    <h2 class="section-title">Read Data</h2>
+    <span class="section-tag t1">Setup</span>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Read CSV (basic)</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="var">df</span> = <span class="var">pd</span>.<span class="fn">read_csv</span>(<span class="st">'filename.csv'</span>)
+<span class="var">df</span>.<span class="fn">head</span>()                   <span class="cm"># first 5 rows</span></code></pre>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Read CSV with custom column names</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="cm"># If the file has NO header row:</span>
+<span class="var">df</span> = <span class="var">pd</span>.<span class="fn">read_csv</span>(<span class="st">'filename.csv'</span>, header=<span class="kw">None</span>,
+                  names=[<span class="st">'col1'</span>, <span class="st">'col2'</span>, <span class="st">'col3'</span>, <span class="st">'col4'</span>])
+
+<span class="cm"># If the file HAS a header row but you want to overwrite it:</span>
+<span class="var">df</span>.<span class="var">columns</span> = [<span class="st">'new_col1'</span>, <span class="st">'new_col2'</span>, <span class="st">'new_col3'</span>]</code></pre>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Read Excel (.xlsx)</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="var">df</span> = <span class="var">pd</span>.<span class="fn">read_excel</span>(<span class="st">'filename.xlsx'</span>)</code></pre>
+  </div>
+</section>
+
+<!-- ─── INSPECT ─── -->
+<section class="section" id="inspect">
+  <div class="section-header">
+    <div class="section-icon t1">🔍</div>
+    <h2 class="section-title">Inspect / EDA</h2>
+    <span class="section-tag t1">Setup</span>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Row count, column count, total elements</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="fn">print</span>(<span class="st">"Rows:"</span>, <span class="var">df</span>.<span class="var">shape</span>[<span class="nm">0</span>])
+<span class="fn">print</span>(<span class="st">"Columns:"</span>, <span class="var">df</span>.<span class="var">shape</span>[<span class="nm">1</span>])
+<span class="fn">print</span>(<span class="st">"Total elements:"</span>, <span class="var">df</span>.<span class="var">size</span>)</code></pre>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Display specific row range (e.g. rows 1001–1020)</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="cm"># By position (iloc) — zero-indexed, so row 1001 = index 1000</span>
+<span class="var">df</span>.<span class="fn">iloc</span>[<span class="nm">1000</span>:<span class="nm">1020</span>]
+
+<span class="cm"># By label (loc) — index-label based, inclusive on both ends</span>
+<span class="var">df</span>.<span class="fn">loc</span>[<span class="nm">1000</span>:<span class="nm">1020</span>]
+
+<span class="cm"># First / last N rows</span>
+<span class="var">df</span>.<span class="fn">head</span>(<span class="nm">20</span>)
+<span class="var">df</span>.<span class="fn">tail</span>(<span class="nm">20</span>)</code></pre>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Statistical summary</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="var">df</span>.<span class="fn">describe</span>()                     <span class="cm"># numeric features only</span>
+<span class="var">df</span>.<span class="fn">describe</span>(include=<span class="st">'all'</span>)         <span class="cm"># all features incl. object</span>
+<span class="var">df</span>.<span class="fn">describe</span>(include=[<span class="st">'object'</span>])   <span class="cm"># text only</span></code></pre>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Concise summary (info)</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="var">df</span>.<span class="fn">info</span>()   <span class="cm"># index, dtypes, non-null counts, memory usage</span></code></pre>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Data types & unique values per feature</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="fn">print</span>(<span class="var">df</span>.<span class="var">dtypes</span>)
+<span class="fn">print</span>(<span class="var">df</span>.<span class="fn">nunique</span>())    <span class="cm"># number of unique values per column</span></code></pre>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Check missing values</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="fn">print</span>(<span class="var">df</span>.<span class="fn">isnull</span>().<span class="fn">sum</span>())                        <span class="cm"># count per column</span>
+<span class="fn">print</span>(<span class="var">df</span>.<span class="fn">isnull</span>().<span class="fn">sum</span>() / <span class="fn">len</span>(<span class="var">df</span>) * <span class="nm">100</span>)       <span class="cm"># as percentages</span>
+<span class="fn">print</span>(<span class="var">df</span>.<span class="fn">isnull</span>().<span class="fn">any</span>().<span class="fn">any</span>())                  <span class="cm"># True if ANY missing</span></code></pre>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Check for zero values</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="fn">print</span>((<span class="var">df</span> == <span class="nm">0</span>).<span class="fn">sum</span>())                   <span class="cm"># zeros per column</span>
+<span class="fn">print</span>(<span class="var">df</span>[(<span class="var">df</span> == <span class="nm">0</span>).<span class="fn">any</span>(axis=<span class="nm">1</span>)])        <span class="cm"># rows with any zero</span></code></pre>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Value counts for a specific column</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="fn">print</span>(<span class="var">df</span>[<span class="st">'column_name'</span>].<span class="fn">value_counts</span>())
+<span class="fn">print</span>(<span class="var">df</span>[<span class="st">'column_name'</span>].<span class="fn">value_counts</span>(normalize=<span class="kw">True</span>) * <span class="nm">100</span>)  <span class="cm"># %</span></code></pre>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Find min/max and their row info</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="cm"># Maximum value and its index</span>
+<span class="var">max_val</span> = <span class="var">df</span>[<span class="st">'Total_Fatalities'</span>].<span class="fn">max</span>()
+<span class="fn">print</span>(max_val)
+
+<span class="cm"># The full row where max occurs</span>
+<span class="var">row</span> = <span class="var">df</span>[<span class="var">df</span>[<span class="st">'Total_Fatalities'</span>] == <span class="var">max_val</span>]
+<span class="fn">print</span>(<span class="var">row</span>)
+
+<span class="cm"># Using idxmax/idxmin</span>
+<span class="var">idx</span> = <span class="var">df</span>[<span class="st">'column'</span>].<span class="fn">idxmax</span>()
+<span class="fn">print</span>(<span class="var">df</span>.<span class="fn">loc</span>[<span class="var">idx</span>])</code></pre>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Top N by frequency / ranking</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="cm"># Top 20 operators by crash count</span>
+<span class="fn">print</span>(<span class="var">df</span>[<span class="st">'Airline_Operator'</span>].<span class="fn">value_counts</span>().<span class="fn">head</span>(<span class="nm">20</span>))
+
+<span class="cm"># Top 10 most expensive (no duplicates)</span>
+<span class="fn">print</span>(<span class="var">df</span>.<span class="fn">drop_duplicates</span>(subset=<span class="st">'name'</span>)
+        .<span class="fn">nlargest</span>(<span class="nm">10</span>, <span class="st">'selling_price'</span>)[<span class="st">'name'</span>])</code></pre>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Percentage of specific group</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="cm"># % of crashes by South African Airways</span>
+<span class="var">saa_count</span> = <span class="var">df</span>[<span class="var">df</span>[<span class="st">'Airline_Operator'</span>] == <span class="st">'South African Airways'</span>].<span class="fn">shape</span>[<span class="nm">0</span>]
+<span class="var">pct</span> = (<span class="var">saa_count</span> / <span class="fn">len</span>(<span class="var">df</span>)) * <span class="nm">100</span>
+<span class="fn">print</span>(<span class="fn">round</span>(<span class="var">pct</span>, <span class="nm">2</span>))
+
+<span class="cm"># % of games ending in "mate"</span>
+<span class="var">mate_pct</span> = (<span class="var">df</span>[<span class="st">'game_outcome'</span>] == <span class="st">'mate'</span>).<span class="fn">mean</span>() * <span class="nm">100</span>
+<span class="fn">print</span>(<span class="fn">round</span>(<span class="var">mate_pct</span>, <span class="nm">2</span>))</code></pre>
+  </div>
+</section>
+
+<!-- ─── COLUMN OPERATIONS ─── -->
+<section class="section" id="columns">
+  <div class="section-header">
+    <div class="section-icon t1">📋</div>
+    <h2 class="section-title">Column Operations</h2>
+    <span class="section-tag t1">Setup</span>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Rename columns</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="var">df</span>.<span class="fn">rename</span>(columns={
+    <span class="st">'Location'</span>: <span class="st">'Incident_Location'</span>,
+    <span class="st">'Operator'</span>: <span class="st">'Airline_Operator'</span>,
+    <span class="st">'Type'</span>: <span class="st">'Aircraft_Type'</span>
+}, inplace=<span class="kw">True</span>)
+
+<span class="cm"># Or overwrite all at once</span>
+<span class="var">df</span>.<span class="var">columns</span> = [<span class="st">'col1'</span>, <span class="st">'col2'</span>, <span class="st">'col3'</span>]</code></pre>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Drop columns (by name)</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="var">df</span>.<span class="fn">drop</span>(columns=[<span class="st">'Date'</span>, <span class="st">'Time'</span>, <span class="st">'Route'</span>], inplace=<span class="kw">True</span>)</code></pre>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Drop first & last N columns (without specifying names)</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="cm"># Drop first column and last 7 columns</span>
+<span class="var">df</span> = <span class="var">df</span>.<span class="fn">iloc</span>[:, <span class="nm">1</span>:-<span class="nm">7</span>]</code></pre>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Add a new column</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="cm"># Combine two columns</span>
+<span class="var">df</span>[<span class="st">'Total_Fatalities'</span>] = <span class="var">df</span>[<span class="st">'Fatalities_Aboard'</span>] + <span class="var">df</span>[<span class="st">'Ground_Fatalities'</span>]
+
+<span class="cm"># Add binary feature</span>
+<span class="var">df</span>[<span class="st">'Cancelled'</span>] = <span class="var">df</span>[<span class="st">'OrderStatus'</span>].<span class="fn">apply</span>(<span class="kw">lambda</span> <span class="var">x</span>: <span class="nm">1</span> <span class="kw">if</span> <span class="var">x</span> == <span class="st">'Cancelled'</span> <span class="kw">else</span> <span class="nm">0</span>)</code></pre>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Use a for loop to drop columns with > N unique text values</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="cm"># Keep only columns with <= 10 unique text values</span>
+<span class="kw">for</span> <span class="var">col</span> <span class="kw">in</span> <span class="var">df</span>.<span class="fn">select_dtypes</span>(include=<span class="st">'object'</span>).<span class="var">columns</span>:
+    <span class="kw">if</span> <span class="var">df</span>[<span class="var">col</span>].<span class="fn">nunique</span>() > <span class="nm">10</span>:
+        <span class="var">df</span>.<span class="fn">drop</span>(columns=[<span class="var">col</span>], inplace=<span class="kw">True</span>)
+<span class="fn">print</span>(<span class="var">df</span>.<span class="var">columns</span>.<span class="fn">tolist</span>())</code></pre>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Insert columns at a specific position</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="cm"># Insert Year column after index 1 (position 2)</span>
+<span class="var">df</span>.<span class="fn">insert</span>(<span class="nm">2</span>, <span class="st">'Year'</span>,  <span class="var">df</span>[<span class="st">'Date'</span>].<span class="var">dt</span>.<span class="var">year</span>.<span class="fn">astype</span>(<span class="fn">int</span>))
+<span class="var">df</span>.<span class="fn">insert</span>(<span class="nm">3</span>, <span class="st">'Month'</span>, <span class="var">df</span>[<span class="st">'Date'</span>].<span class="var">dt</span>.<span class="var">month</span>.<span class="fn">astype</span>(<span class="fn">int</span>))
+<span class="var">df</span>.<span class="fn">insert</span>(<span class="nm">4</span>, <span class="st">'Day'</span>,   <span class="var">df</span>[<span class="st">'Date'</span>].<span class="var">dt</span>.<span class="var">day</span>.<span class="fn">astype</span>(<span class="fn">int</span>))</code></pre>
+  </div>
+</section>
+
+<!-- ─── MISSING VALUES ─── -->
+<section class="section" id="missing">
+  <div class="section-header">
+    <div class="section-icon t3">🩹</div>
+    <h2 class="section-title">Missing Values</h2>
+    <span class="section-tag t3">Preprocessing</span>
+  </div>
+
+  <div class="note"><strong>Exam tip:</strong> Always motivate your method — mean/median for numeric, mode for categorical. Confirm afterwards with <code>df.isnull().sum()</code>.</div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Fill with mean (numeric)</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="cm"># Single column</span>
+<span class="var">df</span>[<span class="st">'column'</span>].<span class="fn">fillna</span>(<span class="var">df</span>[<span class="st">'column'</span>].<span class="fn">mean</span>(), inplace=<span class="kw">True</span>)
+
+<span class="cm"># All numeric columns at once</span>
+<span class="kw">for</span> <span class="var">col</span> <span class="kw">in</span> <span class="var">df</span>.<span class="fn">select_dtypes</span>(include=<span class="st">'number'</span>).<span class="var">columns</span>:
+    <span class="var">df</span>[<span class="var">col</span>].<span class="fn">fillna</span>(<span class="var">df</span>[<span class="var">col</span>].<span class="fn">mean</span>(), inplace=<span class="kw">True</span>)
+<span class="fn">print</span>(<span class="var">df</span>.<span class="fn">isnull</span>().<span class="fn">sum</span>())</code></pre>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Fill with median (numeric, skewed data)</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="var">df</span>[<span class="st">'column'</span>].<span class="fn">fillna</span>(<span class="var">df</span>[<span class="st">'column'</span>].<span class="fn">median</span>(), inplace=<span class="kw">True</span>)</code></pre>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Fill with mode (categorical / text)</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="var">df</span>[<span class="st">'column'</span>].<span class="fn">fillna</span>(<span class="var">df</span>[<span class="st">'column'</span>].<span class="fn">mode</span>()[<span class="nm">0</span>], inplace=<span class="kw">True</span>)</code></pre>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Fill with group mean (e.g. same vehicle name)</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="cm"># Augment missing values with average of the same vehicle name group</span>
+<span class="var">df</span>[<span class="st">'mileage'</span>] = <span class="var">df</span>.<span class="fn">groupby</span>(<span class="st">'name'</span>)[<span class="st">'mileage'</span>].<span class="fn">transform</span>(<span class="kw">lambda</span> <span class="var">x</span>: <span class="var">x</span>.<span class="fn">fillna</span>(<span class="var">x</span>.<span class="fn">mean</span>()))
+
+<span class="cm"># For all numeric cols using group mean</span>
+<span class="kw">for</span> <span class="var">col</span> <span class="kw">in</span> [<span class="st">'mileage'</span>, <span class="st">'engine'</span>, <span class="st">'max_power'</span>]:
+    <span class="var">df</span>[<span class="var">col</span>] = <span class="var">df</span>.<span class="fn">groupby</span>(<span class="st">'name'</span>)[<span class="var">col</span>].<span class="fn">transform</span>(<span class="kw">lambda</span> <span class="var">x</span>: <span class="var">x</span>.<span class="fn">fillna</span>(<span class="var">x</span>.<span class="fn">mean</span>()))
+<span class="fn">print</span>(<span class="var">df</span>.<span class="fn">isnull</span>().<span class="fn">sum</span>())</code></pre>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Drop rows with missing values</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="var">df</span>.<span class="fn">dropna</span>(inplace=<span class="kw">True</span>)
+<span class="fn">print</span>(<span class="var">df</span>.<span class="fn">isnull</span>().<span class="fn">sum</span>())   <span class="cm"># confirm</span></code></pre>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Calculate missing from other columns (e.g. chess moves)</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="cm"># Derive number_of_moves from the moves string</span>
+<span class="var">df</span>[<span class="st">'number_of_moves'</span>] = <span class="var">df</span>[<span class="st">'all_moves_in_standard_chess_notation'</span>].<span class="fn">apply</span>(
+    <span class="kw">lambda</span> <span class="var">x</span>: <span class="fn">len</span>(<span class="fn">str</span>(<span class="var">x</span>).<span class="fn">split</span>()) <span class="kw">if</span> <span class="var">pd</span>.<span class="fn">notna</span>(<span class="var">x</span>) <span class="kw">else</span> <span class="nm">0</span>
+)</code></pre>
+  </div>
+</section>
+
+<!-- ─── OUTLIERS ─── -->
+<section class="section" id="outliers">
+  <div class="section-header">
+    <div class="section-icon t3">📦</div>
+    <h2 class="section-title">Outliers & Boxplots</h2>
+    <span class="section-tag t3">Preprocessing</span>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Create boxplots to visualise outliers</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="var">fig</span>, <span class="var">axes</span> = <span class="var">plt</span>.<span class="fn">subplots</span>(<span class="nm">1</span>, <span class="nm">4</span>, figsize=(<span class="nm">16</span>, <span class="nm">4</span>))
+<span class="kw">for</span> <span class="var">i</span>, <span class="var">col</span> <span class="kw">in</span> <span class="fn">enumerate</span>([<span class="st">'Weight'</span>, <span class="st">'Length'</span>, <span class="st">'Width'</span>, <span class="st">'Thickness'</span>]):
+    <span class="var">sns</span>.<span class="fn">boxplot</span>(y=<span class="var">df</span>[<span class="var">col</span>], ax=<span class="var">axes</span>[<span class="var">i</span>])
+    <span class="var">axes</span>[<span class="var">i</span>].<span class="fn">set_title</span>(<span class="var">col</span>)
+<span class="var">plt</span>.<span class="fn">tight_layout</span>()
+<span class="var">plt</span>.<span class="fn">show</span>()</code></pre>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Remove outliers using IQR (recommended method)</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="kw">for</span> <span class="var">col</span> <span class="kw">in</span> [<span class="st">'Weight'</span>, <span class="st">'Length'</span>, <span class="st">'Width'</span>, <span class="st">'Thickness'</span>]:
+    <span class="var">Q1</span> = <span class="var">df</span>[<span class="var">col</span>].<span class="fn">quantile</span>(<span class="nm">0.25</span>)
+    <span class="var">Q3</span> = <span class="var">df</span>[<span class="var">col</span>].<span class="fn">quantile</span>(<span class="nm">0.75</span>)
+    <span class="var">IQR</span> = <span class="var">Q3</span> - <span class="var">Q1</span>
+    <span class="var">lower</span> = <span class="var">Q1</span> - <span class="nm">1.5</span> * <span class="var">IQR</span>
+    <span class="var">upper</span> = <span class="var">Q3</span> + <span class="nm">1.5</span> * <span class="var">IQR</span>
+    <span class="var">df</span> = <span class="var">df</span>[(<span class="var">df</span>[<span class="var">col</span>] >= <span class="var">lower</span>) & (<span class="var">df</span>[<span class="var">col</span>] <= <span class="var">upper</span>)]
+
+<span class="fn">print</span>(<span class="st">"Shape after removing outliers:"</span>, <span class="var">df</span>.<span class="var">shape</span>)</code></pre>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Cap outliers (clip) instead of removing</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="kw">for</span> <span class="var">col</span> <span class="kw">in</span> [<span class="st">'Weight'</span>, <span class="st">'Length'</span>]:
+    <span class="var">Q1</span> = <span class="var">df</span>[<span class="var">col</span>].<span class="fn">quantile</span>(<span class="nm">0.25</span>)
+    <span class="var">Q3</span> = <span class="var">df</span>[<span class="var">col</span>].<span class="fn">quantile</span>(<span class="nm">0.75</span>)
+    <span class="var">IQR</span> = <span class="var">Q3</span> - <span class="var">Q1</span>
+    <span class="var">df</span>[<span class="var">col</span>] = <span class="var">df</span>[<span class="var">col</span>].<span class="fn">clip</span>(<span class="var">Q1</span> - <span class="nm">1.5</span>*<span class="var">IQR</span>, <span class="var">Q3</span> + <span class="nm">1.5</span>*<span class="var">IQR</span>)</code></pre>
+  </div>
+</section>
+
+<!-- ─── DATE & TIME ─── -->
+<section class="section" id="datetime">
+  <div class="section-header">
+    <div class="section-icon t3">📅</div>
+    <h2 class="section-title">Date & Time</h2>
+    <span class="section-tag t3">Preprocessing</span>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Convert column to DateTime</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="var">df</span>[<span class="st">'Date'</span>] = <span class="var">pd</span>.<span class="fn">to_datetime</span>(<span class="var">df</span>[<span class="st">'Date'</span>])
+<span class="fn">print</span>(<span class="var">df</span>[<span class="st">'Date'</span>].<span class="var">dtype</span>)</code></pre>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Extract Year, Month, Day as integer columns</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="var">df</span>[<span class="st">'Date'</span>] = <span class="var">pd</span>.<span class="fn">to_datetime</span>(<span class="var">df</span>[<span class="st">'Date'</span>])
+<span class="var">df</span>.<span class="fn">insert</span>(<span class="nm">2</span>, <span class="st">'Year'</span>,  <span class="var">df</span>[<span class="st">'Date'</span>].<span class="var">dt</span>.<span class="var">year</span>.<span class="fn">astype</span>(<span class="fn">int</span>))
+<span class="var">df</span>.<span class="fn">insert</span>(<span class="nm">3</span>, <span class="st">'Month'</span>, <span class="var">df</span>[<span class="st">'Date'</span>].<span class="var">dt</span>.<span class="var">month</span>.<span class="fn">astype</span>(<span class="fn">int</span>))
+<span class="var">df</span>.<span class="fn">insert</span>(<span class="nm">4</span>, <span class="st">'Day'</span>,   <span class="var">df</span>[<span class="st">'Date'</span>].<span class="var">dt</span>.<span class="var">day</span>.<span class="fn">astype</span>(<span class="fn">int</span>))
+<span class="var">df</span>.<span class="fn">head</span>()</code></pre>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Add age column (years since year)</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="kw">import</span> <span class="cl">datetime</span>
+<span class="var">current_year</span> = <span class="var">datetime</span>.<span class="var">datetime</span>.<span class="fn">now</span>().<span class="var">year</span>
+<span class="var">df</span>[<span class="st">'age'</span>] = <span class="var">current_year</span> - <span class="var">df</span>[<span class="st">'year'</span>]
+<span class="fn">print</span>(<span class="var">df</span>[[<span class="st">'year'</span>, <span class="st">'age'</span>]].<span class="fn">head</span>())</code></pre>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Dates with most/least admissions</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="cm"># Most patients admitted on same date</span>
+<span class="fn">print</span>(<span class="var">df</span>[<span class="st">'Date of Admission'</span>].<span class="fn">value_counts</span>().<span class="fn">head</span>(<span class="nm">5</span>))
+
+<span class="cm"># Least admitted</span>
+<span class="fn">print</span>(<span class="var">df</span>[<span class="st">'Date of Admission'</span>].<span class="fn">value_counts</span>().<span class="fn">tail</span>(<span class="nm">5</span>))</code></pre>
+  </div>
+</section>
+
+<!-- ─── SHUFFLE ─── -->
+<section class="section" id="shuffle">
+  <div class="section-header">
+    <div class="section-icon t3">🔀</div>
+    <h2 class="section-title">Shuffle & Reset Index</h2>
+    <span class="section-tag t3">Preprocessing</span>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Shuffle rows & reset index</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="cm"># Shuffle the entire dataframe</span>
+<span class="var">df</span> = <span class="var">df</span>.<span class="fn">sample</span>(frac=<span class="nm">1</span>, random_state=<span class="nm">42</span>)
+<span class="fn">print</span>(<span class="var">df</span>.<span class="fn">iloc</span>[<span class="nm">0</span>:<span class="nm">10</span>])   <span class="cm"># rows by position</span>
+<span class="fn">print</span>(<span class="var">df</span>.<span class="fn">loc</span>[<span class="nm">1</span>:<span class="nm">10</span>])    <span class="cm"># rows by index LABEL (different output!)</span>
+
+<span class="cm"># Reset index after shuffle</span>
+<span class="var">df</span> = <span class="var">df</span>.<span class="fn">reset_index</span>(drop=<span class="kw">True</span>)</code></pre>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Random sample (without replacement) to reduce dataset</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="cm"># Select 10 000 random rows (no replacement)</span>
+<span class="var">df</span> = <span class="var">df</span>.<span class="fn">sample</span>(n=<span class="nm">10000</span>, replace=<span class="kw">False</span>, random_state=<span class="nm">42</span>)
+<span class="var">df</span> = <span class="var">df</span>.<span class="fn">reset_index</span>(drop=<span class="kw">True</span>)
+<span class="fn">print</span>(<span class="var">df</span>.<span class="var">shape</span>)</code></pre>
+  </div>
+</section>
+
+<!-- ─── ENCODING ─── -->
+<section class="section" id="encoding">
+  <div class="section-header">
+    <div class="section-icon t4">🔢</div>
+    <h2 class="section-title">Encoding (Text → Numbers)</h2>
+    <span class="section-tag t4">Preprocessing</span>
+  </div>
+
+  <div class="note"><strong>Rule of thumb used in all papers:</strong> 2 unique values → binary [0,1] | 3–10 unique values → label encode [0,1,2…] or one-hot | &gt;10 unique values → one-hot encode</div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Binary encoding (2 unique values → 0/1)</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="kw">from</span> <span class="cl">sklearn.preprocessing</span> <span class="kw">import</span> <span class="fn">LabelEncoder</span>
+<span class="var">le</span> = <span class="fn">LabelEncoder</span>()
+
+<span class="kw">for</span> <span class="var">col</span> <span class="kw">in</span> <span class="var">df</span>.<span class="fn">select_dtypes</span>(include=<span class="st">'object'</span>).<span class="var">columns</span>:
+    <span class="kw">if</span> <span class="var">df</span>[<span class="var">col</span>].<span class="fn">nunique</span>() == <span class="nm">2</span>:
+        <span class="var">df</span>[<span class="var">col</span>] = <span class="var">le</span>.<span class="fn">fit_transform</span>(<span class="var">df</span>[<span class="var">col</span>])
+<span class="fn">print</span>(<span class="var">df</span>.<span class="fn">head</span>())</code></pre>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Label encoding (3–10 unique values → 0,1,2…)</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="kw">for</span> <span class="var">col</span> <span class="kw">in</span> <span class="var">df</span>.<span class="fn">select_dtypes</span>(include=<span class="st">'object'</span>).<span class="var">columns</span>:
+    <span class="kw">if</span> <span class="nm">2</span> < <span class="var">df</span>[<span class="var">col</span>].<span class="fn">nunique</span>() <= <span class="nm">10</span>:
+        <span class="var">df</span>[<span class="var">col</span>] = <span class="fn">LabelEncoder</span>().<span class="fn">fit_transform</span>(<span class="var">df</span>[<span class="var">col</span>])
+
+<span class="cm"># Or specific columns by name</span>
+<span class="var">df</span>[<span class="st">'fuel'</span>]         = <span class="fn">LabelEncoder</span>().<span class="fn">fit_transform</span>(<span class="var">df</span>[<span class="st">'fuel'</span>])
+<span class="var">df</span>[<span class="st">'seller_type'</span>]  = <span class="fn">LabelEncoder</span>().<span class="fn">fit_transform</span>(<span class="var">df</span>[<span class="st">'seller_type'</span>])
+<span class="var">df</span>[<span class="st">'transmission'</span>] = <span class="fn">LabelEncoder</span>().<span class="fn">fit_transform</span>(<span class="var">df</span>[<span class="st">'transmission'</span>])</code></pre>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>One-hot encoding (>10 unique values or as specified)</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="cm"># Single column</span>
+<span class="var">df</span> = <span class="var">pd</span>.<span class="fn">get_dummies</span>(<span class="var">df</span>, columns=[<span class="st">'Incident_Location'</span>], drop_first=<span class="kw">False</span>)
+
+<span class="cm"># All object columns with > 2 unique values (automated)</span>
+<span class="var">ohe_cols</span> = [<span class="var">col</span> <span class="kw">for</span> <span class="var">col</span> <span class="kw">in</span> <span class="var">df</span>.<span class="fn">select_dtypes</span>(include=<span class="st">'object'</span>).<span class="var">columns</span>
+            <span class="kw">if</span> <span class="var">df</span>[<span class="var">col</span>].<span class="fn">nunique</span>() > <span class="nm">2</span>]
+<span class="var">df</span> = <span class="var">pd</span>.<span class="fn">get_dummies</span>(<span class="var">df</span>, columns=<span class="var">ohe_cols</span>)
+<span class="fn">print</span>(<span class="var">df</span>.<span class="var">dtypes</span>.<span class="fn">unique</span>())</code></pre>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Encode the target label (Test Results, Man of the Match…)</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="cm"># Test Results: Normal=0, Inconclusive=1, Abnormal=2</span>
+<span class="var">df</span>[<span class="st">'Test Results'</span>] = <span class="fn">LabelEncoder</span>().<span class="fn">fit_transform</span>(<span class="var">df</span>[<span class="st">'Test Results'</span>])
+<span class="fn">print</span>(<span class="var">df</span>[<span class="st">'Test Results'</span>].<span class="fn">unique</span>())
+
+<span class="cm"># Man of the Match: Yes=1, No=0</span>
+<span class="var">df</span>[<span class="st">'Man of the Match'</span>] = <span class="var">df</span>[<span class="st">'Man of the Match'</span>].<span class="fn">map</span>({<span class="st">'Yes'</span>: <span class="nm">1</span>, <span class="st">'No'</span>: <span class="nm">0</span>})</code></pre>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Confirm no object columns remain</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="fn">print</span>(<span class="var">df</span>.<span class="fn">select_dtypes</span>(include=<span class="st">'object'</span>).<span class="var">columns</span>.<span class="fn">tolist</span>())
+<span class="cm"># Should print [] (empty list)</span></code></pre>
+  </div>
+</section>
+
+<!-- ─── SCALING ─── -->
+<section class="section" id="scaling">
+  <div class="section-header">
+    <div class="section-icon t4">⚖️</div>
+    <h2 class="section-title">Scaling / Normalisation</h2>
+    <span class="section-tag t4">Preprocessing</span>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>MinMaxScaler (scale all to 0–1, excluding certain cols)</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="kw">from</span> <span class="cl">sklearn.preprocessing</span> <span class="kw">import</span> <span class="fn">MinMaxScaler</span>
+
+<span class="var">exclude</span> = [<span class="st">'Year'</span>, <span class="st">'Month'</span>, <span class="st">'Day'</span>]   <span class="cm"># columns to skip</span>
+<span class="var">scale_cols</span> = [<span class="var">col</span> <span class="kw">for</span> <span class="var">col</span> <span class="kw">in</span> <span class="var">df</span>.<span class="var">columns</span> <span class="kw">if</span> <span class="var">col</span> <span class="kw">not in</span> <span class="var">exclude</span>]
+
+<span class="var">scaler</span> = <span class="fn">MinMaxScaler</span>()
+<span class="var">df</span>[<span class="var">scale_cols</span>] = <span class="var">scaler</span>.<span class="fn">fit_transform</span>(<span class="var">df</span>[<span class="var">scale_cols</span>])
+<span class="fn">print</span>(<span class="var">df</span>.<span class="fn">describe</span>())</code></pre>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>StandardScaler (zero mean, unit variance)</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="kw">from</span> <span class="cl">sklearn.preprocessing</span> <span class="kw">import</span> <span class="fn">StandardScaler</span>
+
+<span class="var">scaler</span> = <span class="fn">StandardScaler</span>()
+<span class="var">features</span> = [<span class="st">'Alcohol'</span>, <span class="st">'Malic_Acid'</span>, <span class="st">'Ash_Alcanity'</span>]
+<span class="var">df</span>[<span class="var">features</span>] = <span class="var">scaler</span>.<span class="fn">fit_transform</span>(<span class="var">df</span>[<span class="var">features</span>])</code></pre>
+  </div>
+</section>
+
+<!-- ─── BALANCING ─── -->
+<section class="section" id="balancing">
+  <div class="section-header">
+    <div class="section-icon t5">⚖️</div>
+    <h2 class="section-title">Balancing Data (Over/Under sampling)</h2>
+    <span class="section-tag t5">Preprocessing</span>
+  </div>
+
+  <div class="note"><strong>Over-sampling</strong> = create synthetic minority samples. Use when dataset is small and you can't afford to lose data. <strong>Under-sampling</strong> = remove majority samples. Use when dataset is large enough.</div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Check balance & pie chart</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="fn">print</span>(<span class="var">df</span>[<span class="st">'Attrition_Flag'</span>].<span class="fn">value_counts</span>())
+
+<span class="var">counts</span> = <span class="var">df</span>[<span class="st">'Attrition_Flag'</span>].<span class="fn">value_counts</span>()
+<span class="var">plt</span>.<span class="fn">pie</span>(<span class="var">counts</span>, labels=<span class="var">counts</span>.<span class="var">index</span>,
+        autopct=<span class="kw">lambda</span> <span class="var">p</span>: <span class="st">f'</span>{<span class="var">p</span>:<span class="nm">.3f</span>}<span class="st">%'</span>)
+<span class="var">plt</span>.<span class="fn">title</span>(<span class="st">'Class Distribution'</span>)
+<span class="var">plt</span>.<span class="fn">show</span>()</code></pre>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Random Under-sampling</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="kw">from</span> <span class="cl">imblearn.under_sampling</span> <span class="kw">import</span> <span class="fn">RandomUnderSampler</span>
+
+<span class="var">X</span> = <span class="var">df</span>.<span class="fn">drop</span>(columns=[<span class="st">'Attrition_Flag'</span>])
+<span class="var">y</span> = <span class="var">df</span>[<span class="st">'Attrition_Flag'</span>]
+
+<span class="var">rus</span> = <span class="fn">RandomUnderSampler</span>(random_state=<span class="nm">42</span>)
+<span class="var">X_res</span>, <span class="var">y_res</span> = <span class="var">rus</span>.<span class="fn">fit_resample</span>(<span class="var">X</span>, <span class="var">y</span>)
+
+<span class="var">customers_resampled</span> = <span class="var">pd</span>.<span class="fn">concat</span>([
+    <span class="var">pd</span>.<span class="fn">DataFrame</span>(<span class="var">X_res</span>, columns=<span class="var">X</span>.<span class="var">columns</span>),
+    <span class="var">pd</span>.<span class="fn">Series</span>(<span class="var">y_res</span>, name=<span class="st">'Attrition_Flag'</span>)
+], axis=<span class="nm">1</span>)
+
+<span class="fn">print</span>(<span class="var">customers_resampled</span>[<span class="st">'Attrition_Flag'</span>].<span class="fn">value_counts</span>())</code></pre>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Random Over-sampling (SMOTE)</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="kw">from</span> <span class="cl">imblearn.over_sampling</span> <span class="kw">import</span> <span class="fn">RandomOverSampler</span>, <span class="fn">SMOTE</span>
+
+<span class="var">X</span> = <span class="var">df</span>.<span class="fn">drop</span>(columns=[<span class="st">'Medication'</span>])
+<span class="var">y</span> = <span class="var">df</span>[<span class="st">'Medication'</span>]
+
+<span class="cm"># Simple random over-sampler</span>
+<span class="var">ros</span> = <span class="fn">RandomOverSampler</span>(random_state=<span class="nm">42</span>)
+<span class="var">X_res</span>, <span class="var">y_res</span> = <span class="var">ros</span>.<span class="fn">fit_resample</span>(<span class="var">X</span>, <span class="var">y</span>)
+
+<span class="cm"># SMOTE (synthetic minority over-sampling)</span>
+<span class="var">smote</span> = <span class="fn">SMOTE</span>(random_state=<span class="nm">42</span>)
+<span class="var">X_res</span>, <span class="var">y_res</span> = <span class="var">smote</span>.<span class="fn">fit_resample</span>(<span class="var">X</span>, <span class="var">y</span>)
+
+<span class="var">meds_resampled</span> = <span class="var">pd</span>.<span class="fn">DataFrame</span>(<span class="var">X_res</span>, columns=<span class="var">X</span>.<span class="var">columns</span>)
+<span class="var">meds_resampled</span>[<span class="st">'Medication'</span>] = <span class="var">y_res</span>
+<span class="fn">print</span>(<span class="var">meds_resampled</span>[<span class="st">'Medication'</span>].<span class="fn">value_counts</span>())</code></pre>
+  </div>
+</section>
+
+<!-- ─── FEATURE ENGINEERING ─── -->
+<section class="section" id="feature-eng">
+  <div class="section-header">
+    <div class="section-icon t4">🛠️</div>
+    <h2 class="section-title">Feature Engineering</h2>
+    <span class="section-tag t4">Preprocessing</span>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Extract unit from string column (e.g. "1500 cc" → 1500)</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="var">df</span>[<span class="st">'engine'</span>] = <span class="var">df</span>[<span class="st">'engine'</span>].<span class="fn">str</span>.<span class="fn">extract</span>(<span class="st">'(\d+\.?\d*)'</span>).<span class="fn">astype</span>(<span class="fn">float</span>)
+<span class="var">df</span>[<span class="st">'mileage'</span>] = <span class="var">df</span>[<span class="st">'mileage'</span>].<span class="fn">str</span>.<span class="fn">extract</span>(<span class="st">'(\d+\.?\d*)'</span>).<span class="fn">astype</span>(<span class="fn">float</span>)
+<span class="var">df</span>[<span class="st">'max_power'</span>] = <span class="var">df</span>[<span class="st">'max_power'</span>].<span class="fn">str</span>.<span class="fn">extract</span>(<span class="st">'(\d+\.?\d*)'</span>).<span class="fn">astype</span>(<span class="fn">float</span>)</code></pre>
+  </div>
+</section>
+
+<!-- ─── VIZ BAR ─── -->
+<section class="section" id="viz-bar">
+  <div class="section-header">
+    <div class="section-icon t7">📊</div>
+    <h2 class="section-title">Bar Charts</h2>
+    <span class="section-tag t7">Visualisation</span>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Seaborn bar chart (distribution of one feature)</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="var">sns</span>.<span class="fn">countplot</span>(x=<span class="st">'fuel'</span>, data=<span class="var">df</span>)
+<span class="var">plt</span>.<span class="fn">title</span>(<span class="st">'Distribution of Fuel Types'</span>)
+<span class="var">plt</span>.<span class="fn">show</span>()</code></pre>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Overlapping bar charts (Total vs Aboard fatalities per year)</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="var">yearly</span> = <span class="var">df</span>.<span class="fn">groupby</span>(<span class="st">'Year'</span>)[[<span class="st">'Total_Fatalities'</span>, <span class="st">'Fatalities_Aboard'</span>]].<span class="fn">sum</span>().<span class="fn">reset_index</span>()
+
+<span class="var">sns</span>.<span class="fn">barplot</span>(x=<span class="st">'Year'</span>, y=<span class="st">'Total_Fatalities'</span>, data=<span class="var">yearly</span>, color=<span class="st">'red'</span>, label=<span class="st">'Total'</span>)
+<span class="var">sns</span>.<span class="fn">barplot</span>(x=<span class="st">'Year'</span>, y=<span class="st">'Fatalities_Aboard'</span>, data=<span class="var">yearly</span>, color=<span class="st">'blue'</span>, label=<span class="st">'Aboard'</span>)
+<span class="var">plt</span>.<span class="fn">legend</span>()
+<span class="var">plt</span>.<span class="fn">xticks</span>(rotation=<span class="nm">90</span>)
+<span class="var">plt</span>.<span class="fn">show</span>()</code></pre>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Category plot (catplot)</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="cm"># Number of customers per Card Category for each Education Level</span>
+<span class="var">sns</span>.<span class="fn">catplot</span>(x=<span class="st">'Education_Level'</span>, hue=<span class="st">'Card_Category'</span>,
+            kind=<span class="st">'count'</span>, data=<span class="var">df</span>, height=<span class="nm">5</span>, aspect=<span class="nm">2</span>)
+<span class="var">plt</span>.<span class="fn">xticks</span>(rotation=<span class="nm">45</span>)
+<span class="var">plt</span>.<span class="fn">show</span>()</code></pre>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Bar chart of game outcomes (balanced check)</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="var">outcome_counts</span> = <span class="var">df</span>[<span class="st">'winner'</span>].<span class="fn">value_counts</span>()
+<span class="var">outcome_counts</span>.<span class="fn">plot</span>(kind=<span class="st">'bar'</span>, color=[<span class="st">'white'</span>, <span class="st">'black'</span>, <span class="st">'gray'</span>], edgecolor=<span class="st">'black'</span>)
+<span class="var">plt</span>.<span class="fn">title</span>(<span class="st">'Games Won by Colour'</span>)
+<span class="var">plt</span>.<span class="fn">ylabel</span>(<span class="st">'Count'</span>)
+<span class="var">plt</span>.<span class="fn">show</span>()</code></pre>
+  </div>
+</section>
+
+<!-- ─── VIZ PIE ─── -->
+<section class="section" id="viz-pie">
+  <div class="section-header">
+    <div class="section-icon t7">🥧</div>
+    <h2 class="section-title">Pie Charts</h2>
+    <span class="section-tag t7">Visualisation</span>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Pie chart with rounded percentages</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="var">counts</span> = <span class="var">df</span>[<span class="st">'Counterfeit'</span>].<span class="fn">value_counts</span>()
+<span class="var">plt</span>.<span class="fn">figure</span>(figsize=(<span class="nm">6</span>, <span class="nm">6</span>))
+<span class="var">plt</span>.<span class="fn">pie</span>(<span class="var">counts</span>,
+        labels=<span class="var">counts</span>.<span class="var">index</span>,
+        autopct=<span class="kw">lambda</span> <span class="var">p</span>: <span class="st">f'</span>{<span class="fn">round</span>(<span class="var">p</span>, <span class="nm">1</span>)}<span class="st">%'</span>,   <span class="cm"># 1 decimal</span>
+        startangle=<span class="nm">90</span>)
+<span class="var">plt</span>.<span class="fn">title</span>(<span class="st">'Counterfeit vs Genuine Currency'</span>)
+<span class="var">plt</span>.<span class="fn">show</span>()
+
+<span class="cm"># For 0 decimals:  autopct=lambda p: f'{round(p, 0):.0f}%'
+# For 2 decimals:  autopct=lambda p: f'{round(p, 2):.2f}%'
+# For 3 decimals:  autopct=lambda p: f'{round(p, 3):.3f}%'</span></code></pre>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Pie chart comparing two probabilities (first half vs second half goals)</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="var">total</span>   = <span class="fn">len</span>(<span class="var">df</span>.<span class="fn">dropna</span>(subset=[<span class="st">'Minute'</span>]))
+<span class="var">first_h</span>  = <span class="fn">round</span>(<span class="fn">len</span>(<span class="var">df</span>[<span class="var">df</span>[<span class="st">'Minute'</span>] <= <span class="nm">45</span>]) / <span class="var">total</span>, <span class="nm">2</span>)
+<span class="var">second_h</span> = <span class="fn">round</span>(<span class="nm">1</span> - <span class="var">first_h</span>, <span class="nm">2</span>)
+
+<span class="fn">print</span>(<span class="st">f'First half:  </span>{<span class="var">first_h</span>}<span class="st">'</span>)
+<span class="fn">print</span>(<span class="st">f'Second half: </span>{<span class="var">second_h</span>}<span class="st">'</span>)
+
+<span class="var">plt</span>.<span class="fn">pie</span>([<span class="var">first_h</span>, <span class="var">second_h</span>],
+        labels=[<span class="st">'First Half'</span>, <span class="st">'Second Half'</span>],
+        autopct=<span class="st">'%.2f%%'</span>)
+<span class="var">plt</span>.<span class="fn">title</span>(<span class="st">'1st Goal: 1st Half vs 2nd Half'</span>)
+<span class="var">plt</span>.<span class="fn">show</span>()</code></pre>
+  </div>
+</section>
+
+<!-- ─── VIZ SCATTER ─── -->
+<section class="section" id="viz-scatter">
+  <div class="section-header">
+    <div class="section-icon t7">📈</div>
+    <h2 class="section-title">Scatter Plots</h2>
+    <span class="section-tag t7">Visualisation</span>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Scatter plot (two numeric columns)</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="var">sns</span>.<span class="fn">scatterplot</span>(x=<span class="st">'Credit_Limit'</span>, y=<span class="st">'Avg_Open_To_Buy'</span>, data=<span class="var">df</span>)
+<span class="var">plt</span>.<span class="fn">title</span>(<span class="st">'Credit Limit vs Avg Open to Buy'</span>)
+<span class="var">plt</span>.<span class="fn">show</span>()</code></pre>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Combined scatter plot with hue (multiple categories)</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="cm"># Income Category vs Credit Limit, coloured by Card Category</span>
+<span class="var">sns</span>.<span class="fn">scatterplot</span>(x=<span class="st">'Income_Category'</span>, y=<span class="st">'Credit_Limit'</span>,
+                hue=<span class="st">'Card_Category'</span>, data=<span class="var">df</span>)
+<span class="var">plt</span>.<span class="fn">title</span>(<span class="st">'Income vs Credit Limit by Card Type'</span>)
+<span class="var">plt</span>.<span class="fn">show</span>()</code></pre>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>All pairwise scatter plots (10 plots for 5 features)</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="kw">import</span> <span class="cl">itertools</span>
+
+<span class="var">features</span> = [<span class="st">'Alcohol'</span>, <span class="st">'Malic_Acid'</span>, <span class="st">'Ash_Alcanity'</span>, <span class="st">'Proanthocyanins'</span>, <span class="st">'Hue'</span>]
+<span class="var">pairs</span>    = <span class="fn">list</span>(<span class="var">itertools</span>.<span class="fn">combinations</span>(<span class="var">features</span>, <span class="nm">2</span>))  <span class="cm"># 10 pairs</span>
+
+<span class="var">fig</span>, <span class="var">axes</span> = <span class="var">plt</span>.<span class="fn">subplots</span>(<span class="nm">2</span>, <span class="nm">5</span>, figsize=(<span class="nm">25</span>, <span class="nm">10</span>))
+<span class="var">axes</span> = <span class="var">axes</span>.<span class="fn">flatten</span>()
+
+<span class="kw">for</span> <span class="var">i</span>, (<span class="var">x_feat</span>, <span class="var">y_feat</span>) <span class="kw">in</span> <span class="fn">enumerate</span>(<span class="var">pairs</span>):
+    <span class="var">sns</span>.<span class="fn">scatterplot</span>(x=<span class="var">df_cluster</span>[<span class="var">x_feat</span>], y=<span class="var">df_cluster</span>[<span class="var">y_feat</span>],
+                    hue=<span class="var">df_cluster</span>[<span class="st">'Cluster'</span>], ax=<span class="var">axes</span>[<span class="var">i</span>], palette=<span class="st">'tab10'</span>)
+    <span class="cm"># Plot centroids</span>
+    <span class="var">x_idx</span> = <span class="var">features</span>.<span class="fn">index</span>(<span class="var">x_feat</span>)
+    <span class="var">y_idx</span> = <span class="var">features</span>.<span class="fn">index</span>(<span class="var">y_feat</span>)
+    <span class="var">axes</span>[<span class="var">i</span>].<span class="fn">scatter</span>(<span class="var">centroids</span>[:, <span class="var">x_idx</span>], <span class="var">centroids</span>[:, <span class="var">y_idx</span>],
+                    s=<span class="nm">200</span>, c=<span class="st">'red'</span>, marker=<span class="st">'X'</span>, label=<span class="st">'Centroid'</span>)
+    <span class="var">axes</span>[<span class="var">i</span>].<span class="fn">set_xlabel</span>(<span class="var">x_feat</span>)
+    <span class="var">axes</span>[<span class="var">i</span>].<span class="fn">set_ylabel</span>(<span class="var">y_feat</span>)
+
+<span class="var">plt</span>.<span class="fn">tight_layout</span>()
+<span class="var">plt</span>.<span class="fn">show</span>()</code></pre>
+  </div>
+</section>
+
+<!-- ─── HEATMAP ─── -->
+<section class="section" id="viz-heatmap">
+  <div class="section-header">
+    <div class="section-icon t7">🌡️</div>
+    <h2 class="section-title">Correlation Matrix & Heatmap</h2>
+    <span class="section-tag t7">Visualisation</span>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Full correlation matrix + heatmap</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="var">corr_matrix</span> = <span class="var">df</span>.<span class="fn">corr</span>()
+<span class="fn">print</span>(<span class="var">corr_matrix</span>)
+
+<span class="var">plt</span>.<span class="fn">figure</span>(figsize=(<span class="nm">12</span>, <span class="nm">10</span>))
+<span class="var">sns</span>.<span class="fn">heatmap</span>(<span class="var">corr_matrix</span>, annot=<span class="kw">True</span>, fmt=<span class="st">'.2f'</span>,
+            cmap=<span class="st">'coolwarm'</span>, square=<span class="kw">True</span>, linewidths=<span class="nm">0.5</span>)
+<span class="var">plt</span>.<span class="fn">title</span>(<span class="st">'Correlation Matrix'</span>)
+<span class="var">plt</span>.<span class="fn">show</span>()</code></pre>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Correlation vector (one target vs all others)</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="cm"># Correlation of 'Man of the Match' with all other numeric features</span>
+<span class="var">corr_vector</span> = <span class="var">df</span>.<span class="fn">corr</span>()[[<span class="st">'Man of the Match'</span>]].<span class="fn">drop</span>(<span class="st">'Man of the Match'</span>)
+<span class="fn">print</span>(<span class="var">corr_vector</span>)
+
+<span class="var">plt</span>.<span class="fn">figure</span>(figsize=(<span class="nm">4</span>, <span class="nm">8</span>))
+<span class="var">sns</span>.<span class="fn">heatmap</span>(<span class="var">corr_vector</span>, annot=<span class="kw">True</span>, fmt=<span class="st">'.2f'</span>, cmap=<span class="st">'coolwarm'</span>)
+<span class="var">plt</span>.<span class="fn">title</span>(<span class="st">'Correlation with Man of the Match'</span>)
+<span class="var">plt</span>.<span class="fn">show</span>()</code></pre>
+  </div>
+</section>
+
+<!-- ─── MISC PLOTS ─── -->
+<section class="section" id="viz-misc">
+  <div class="section-header">
+    <div class="section-icon t7">🎨</div>
+    <h2 class="section-title">Misc Plots</h2>
+    <span class="section-tag t7">Visualisation</span>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Count plot (OrderStatus broken down by PaymentMethod)</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="var">sns</span>.<span class="fn">countplot</span>(x=<span class="st">'OrderStatus'</span>, hue=<span class="st">'PaymentMethod'</span>, data=<span class="var">df</span>)
+<span class="var">plt</span>.<span class="fn">xticks</span>(rotation=<span class="nm">45</span>)
+<span class="var">plt</span>.<span class="fn">title</span>(<span class="st">'Orders by Status and Payment Method'</span>)
+<span class="var">plt</span>.<span class="fn">show</span>()</code></pre>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Average unit price per product category (bar)</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="var">avg_price</span> = <span class="var">df</span>.<span class="fn">groupby</span>(<span class="st">'Product'</span>)[<span class="st">'UnitPrice'</span>].<span class="fn">mean</span>().<span class="fn">reset_index</span>()
+<span class="var">sns</span>.<span class="fn">barplot</span>(x=<span class="st">'Product'</span>, y=<span class="st">'UnitPrice'</span>, data=<span class="var">avg_price</span>)
+<span class="var">plt</span>.<span class="fn">xticks</span>(rotation=<span class="nm">45</span>)
+<span class="var">plt</span>.<span class="fn">title</span>(<span class="st">'Average Unit Price per Product'</span>)
+<span class="var">plt</span>.<span class="fn">show</span>()</code></pre>
+  </div>
+</section>
+
+<!-- ─── TRAIN TEST SPLIT ─── -->
+<section class="section" id="split">
+  <div class="section-header">
+    <div class="section-icon t2">✂️</div>
+    <h2 class="section-title">Train / Test Split</h2>
+    <span class="section-tag t2">ML</span>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Standard 80/20 split</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="kw">from</span> <span class="cl">sklearn.model_selection</span> <span class="kw">import</span> <span class="fn">train_test_split</span>
+
+<span class="var">X</span> = <span class="var">df</span>.<span class="fn">drop</span>(columns=[<span class="st">'Test Results'</span>])
+<span class="var">y</span> = <span class="var">df</span>[<span class="st">'Test Results'</span>]
+
+<span class="cm"># Scale AFTER split to prevent data leakage</span>
+<span class="var">X_train</span>, <span class="var">X_test</span>, <span class="var">y_train</span>, <span class="var">y_test</span> = <span class="fn">train_test_split</span>(
+    <span class="var">X</span>, <span class="var">y</span>, test_size=<span class="nm">0.2</span>, random_state=<span class="nm">42</span>
+)
+
+<span class="fn">print</span>(<span class="st">"X_train shape:"</span>, <span class="var">X_train</span>.<span class="var">shape</span>)
+<span class="fn">print</span>(<span class="st">"X_test shape: "</span>, <span class="var">X_test</span>.<span class="var">shape</span>)
+<span class="fn">print</span>(<span class="st">"y_train shape:"</span>, <span class="var">y_train</span>.<span class="var">shape</span>)
+<span class="fn">print</span>(<span class="st">"y_test shape: "</span>, <span class="var">y_test</span>.<span class="var">shape</span>)
+
+<span class="cm"># Scale after split</span>
+<span class="var">scaler</span> = <span class="fn">MinMaxScaler</span>()
+<span class="var">X_train</span> = <span class="var">scaler</span>.<span class="fn">fit_transform</span>(<span class="var">X_train</span>)
+<span class="var">X_test</span>  = <span class="var">scaler</span>.<span class="fn">transform</span>(<span class="var">X_test</span>)</code></pre>
+  </div>
+</section>
+
+<!-- ─── CLASSIFIERS ─── -->
+<section class="section" id="classifiers">
+  <div class="section-header">
+    <div class="section-icon t2">🤖</div>
+    <h2 class="section-title">Classifiers</h2>
+    <span class="section-tag t2">ML</span>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Naïve Bayes</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="var">nb</span> = <span class="fn">GaussianNB</span>()
+<span class="var">nb</span>.<span class="fn">fit</span>(<span class="var">X_train</span>, <span class="var">y_train</span>)</code></pre>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Logistic Regression</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="var">lr</span> = <span class="fn">LogisticRegression</span>(max_iter=<span class="nm">1000</span>, random_state=<span class="nm">42</span>)
+<span class="var">lr</span>.<span class="fn">fit</span>(<span class="var">X_train</span>, <span class="var">y_train</span>)</code></pre>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Support Vector Machine (SVM)</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="var">svm</span> = <span class="fn">SVC</span>(gamma=<span class="st">'auto'</span>, random_state=<span class="nm">42</span>)
+<span class="var">svm</span>.<span class="fn">fit</span>(<span class="var">X_train</span>, <span class="var">y_train</span>)</code></pre>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>K-Nearest Neighbours (KNN)</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="var">knn</span> = <span class="fn">KNeighborsClassifier</span>()  <span class="cm"># default k=5</span>
+<span class="var">knn</span>.<span class="fn">fit</span>(<span class="var">X_train</span>, <span class="var">y_train</span>)</code></pre>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Decision Tree</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="var">dt</span> = <span class="fn">DecisionTreeClassifier</span>(random_state=<span class="nm">42</span>)
+<span class="var">dt</span>.<span class="fn">fit</span>(<span class="var">X_train</span>, <span class="var">y_train</span>)</code></pre>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Random Forest (5 trees)</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="var">rf</span> = <span class="fn">RandomForestClassifier</span>(n_estimators=<span class="nm">5</span>, random_state=<span class="nm">42</span>)
+<span class="var">rf</span>.<span class="fn">fit</span>(<span class="var">X_train</span>, <span class="var">y_train</span>)</code></pre>
+  </div>
+</section>
+
+<!-- ─── K-FOLD CV ─── -->
+<section class="section" id="kfold">
+  <div class="section-header">
+    <div class="section-icon t2">🔁</div>
+    <h2 class="section-title">K-Fold Cross Validation</h2>
+    <span class="section-tag t2">ML</span>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>CV accuracy & F1 score for all classifiers (k=10 or k=5)</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="kw">from</span> <span class="cl">sklearn.model_selection</span> <span class="kw">import</span> <span class="fn">cross_val_score</span>
+
+<span class="var">classifiers</span> = {
+    <span class="st">'Naive Bayes'</span>:          <span class="fn">GaussianNB</span>(),
+    <span class="st">'Logistic Regression'</span>:  <span class="fn">LogisticRegression</span>(max_iter=<span class="nm">1000</span>),
+    <span class="st">'SVM'</span>:                   <span class="fn">SVC</span>(gamma=<span class="st">'auto'</span>),
+}
+
+<span class="var">k</span> = <span class="nm">10</span>  <span class="cm"># or k = 5 (check the paper!)</span>
+
+<span class="kw">for</span> <span class="var">name</span>, <span class="var">clf</span> <span class="kw">in</span> <span class="var">classifiers</span>.<span class="fn">items</span>():
+    <span class="var">acc</span> = <span class="fn">cross_val_score</span>(<span class="var">clf</span>, <span class="var">X_train</span>, <span class="var">y_train</span>,
+                          cv=<span class="var">k</span>, scoring=<span class="st">'accuracy'</span>).<span class="fn">mean</span>()
+    <span class="var">f1</span>  = <span class="fn">cross_val_score</span>(<span class="var">clf</span>, <span class="var">X_train</span>, <span class="var">y_train</span>,
+                          cv=<span class="var">k</span>, scoring=<span class="st">'f1_weighted'</span>).<span class="fn">mean</span>()
+    <span class="fn">print</span>(<span class="st">f'</span>{<span class="var">name</span>:<span class="nm">25</span>}<span class="st"> | Accuracy: </span>{<span class="var">acc</span>:<span class="nm">.4f</span>}<span class="st"> | F1: </span>{<span class="var">f1</span>:<span class="nm">.4f</span>}<span class="st">'</span>)</code></pre>
+  </div>
+</section>
+
+<!-- ─── LEARNING CURVE ─── -->
+<section class="section" id="learning-curve">
+  <div class="section-header">
+    <div class="section-icon t2">📉</div>
+    <h2 class="section-title">Learning Curves</h2>
+    <span class="section-tag t2">ML</span>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Plot learning curve for one classifier</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="kw">from</span> <span class="cl">sklearn.model_selection</span> <span class="kw">import</span> <span class="fn">learning_curve</span>
+
+<span class="kw">def</span> <span class="fn">plot_learning_curve</span>(<span class="var">estimator</span>, <span class="var">title</span>, <span class="var">X</span>, <span class="var">y</span>, <span class="var">cv</span>=<span class="nm">10</span>):
+    <span class="var">train_sizes</span>, <span class="var">train_scores</span>, <span class="var">val_scores</span> = <span class="fn">learning_curve</span>(
+        <span class="var">estimator</span>, <span class="var">X</span>, <span class="var">y</span>, cv=<span class="var">cv</span>,
+        train_sizes=<span class="var">np</span>.<span class="fn">linspace</span>(<span class="nm">0.1</span>, <span class="nm">1.0</span>, <span class="nm">10</span>),
+        scoring=<span class="st">'accuracy'</span>, n_jobs=-<span class="nm">1</span>
+    )
+    <span class="var">train_mean</span> = <span class="var">np</span>.<span class="fn">mean</span>(<span class="var">train_scores</span>, axis=<span class="nm">1</span>)
+    <span class="var">val_mean</span>   = <span class="var">np</span>.<span class="fn">mean</span>(<span class="var">val_scores</span>, axis=<span class="nm">1</span>)
+
+    <span class="var">plt</span>.<span class="fn">figure</span>(figsize=(<span class="nm">8</span>, <span class="nm">5</span>))
+    <span class="var">plt</span>.<span class="fn">plot</span>(<span class="var">train_sizes</span>, <span class="var">train_mean</span>, <span class="st">'--'</span>, label=<span class="st">'Training score'</span>)
+    <span class="var">plt</span>.<span class="fn">plot</span>(<span class="var">train_sizes</span>, <span class="var">val_mean</span>, label=<span class="st">'Cross-validation score'</span>)
+    <span class="var">plt</span>.<span class="fn">xlabel</span>(<span class="st">'Training Set Size'</span>)
+    <span class="var">plt</span>.<span class="fn">ylabel</span>(<span class="st">'Accuracy Score'</span>)
+    <span class="var">plt</span>.<span class="fn">title</span>(<span class="var">title</span>)
+    <span class="var">plt</span>.<span class="fn">legend</span>()
+    <span class="var">plt</span>.<span class="fn">show</span>()
+
+<span class="cm"># Draw for each classifier</span>
+<span class="fn">plot_learning_curve</span>(<span class="fn">GaussianNB</span>(), <span class="st">'Learning Curve for the NB Classifier'</span>,  <span class="var">X_train</span>, <span class="var">y_train</span>)
+<span class="fn">plot_learning_curve</span>(<span class="fn">LogisticRegression</span>(max_iter=<span class="nm">1000</span>), <span class="st">'Learning Curve for the LR Classifier'</span>, <span class="var">X_train</span>, <span class="var">y_train</span>)
+<span class="fn">plot_learning_curve</span>(<span class="fn">SVC</span>(gamma=<span class="st">'auto'</span>), <span class="st">'Learning Curve for the SVM Classifier'</span>, <span class="var">X_train</span>, <span class="var">y_train</span>)</code></pre>
+  </div>
+</section>
+
+<!-- ─── EVALUATION ─── -->
+<section class="section" id="evaluation">
+  <div class="section-header">
+    <div class="section-icon t2">🎯</div>
+    <h2 class="section-title">Model Evaluation</h2>
+    <span class="section-tag t2">ML</span>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Predict, accuracy, confusion matrix, classification report</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="cm"># Use the best model (highest F1)</span>
+<span class="var">best_model</span> = <span class="fn">SVC</span>(gamma=<span class="st">'auto'</span>)   <span class="cm"># replace with your best</span>
+<span class="var">best_model</span>.<span class="fn">fit</span>(<span class="var">X_train</span>, <span class="var">y_train</span>)
+
+<span class="var">y_pred</span> = <span class="var">best_model</span>.<span class="fn">predict</span>(<span class="var">X_test</span>)
+
+<span class="fn">print</span>(<span class="st">"Test Accuracy:"</span>, <span class="fn">round</span>(<span class="fn">accuracy_score</span>(<span class="var">y_test</span>, <span class="var">y_pred</span>), <span class="nm">4</span>))
+<span class="fn">print</span>(<span class="st">"\nConfusion Matrix:\n"</span>, <span class="fn">confusion_matrix</span>(<span class="var">y_test</span>, <span class="var">y_pred</span>))
+<span class="fn">print</span>(<span class="st">"\nClassification Report:\n"</span>, <span class="fn">classification_report</span>(<span class="var">y_test</span>, <span class="var">y_pred</span>))</code></pre>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Manual Precision, Recall, F1 (for closed-book theory)</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="cm"># From ST1-2024 Q1.6:
+# Positive class = at risk (12 actual), Predicted positive = 8
+# Of those 8 predicted: 5 correct, 3 wrong (false positives)
+# TP=5, FP=3, FN=7 (12-5), TN=?
+
+# Precision = TP / (TP + FP)</span>
+<span class="var">precision</span> = <span class="nm">5</span> / (<span class="nm">5</span> + <span class="nm">3</span>)   <span class="cm"># = 0.625</span>
+<span class="fn">print</span>(<span class="st">f"Precision: </span>{<span class="var">precision</span>:<span class="nm">.4f</span>}<span class="st">"</span>)
+
+<span class="cm"># Recall = TP / (TP + FN)</span>
+<span class="var">recall</span> = <span class="nm">5</span> / (<span class="nm">5</span> + <span class="nm">7</span>)      <span class="cm"># = 0.4167</span>
+<span class="fn">print</span>(<span class="st">f"Recall:    </span>{<span class="var">recall</span>:<span class="nm">.4f</span>}<span class="st">"</span>)
+
+<span class="cm"># F1 = 2 * (precision * recall) / (precision + recall)</span>
+<span class="var">f1</span> = <span class="nm">2</span> * (<span class="var">precision</span> * <span class="var">recall</span>) / (<span class="var">precision</span> + <span class="var">recall</span>)
+<span class="fn">print</span>(<span class="st">f"F1 Score:  </span>{<span class="var">f1</span>:<span class="nm">.4f</span>}<span class="st">"</span>)</code></pre>
+  </div>
+</section>
+
+<!-- ─── DUMMY CLASSIFIER ─── -->
+<section class="section" id="dummy">
+  <div class="section-header">
+    <div class="section-icon t2">🎲</div>
+    <h2 class="section-title">Dummy Classifier (Baseline)</h2>
+    <span class="section-tag t2">ML</span>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Compare model vs dummy baseline</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="kw">from</span> <span class="cl">sklearn.dummy</span> <span class="kw">import</span> <span class="fn">DummyClassifier</span>
+
+<span class="var">dummy</span> = <span class="fn">DummyClassifier</span>(strategy=<span class="st">'most_frequent'</span>)
+<span class="var">dummy</span>.<span class="fn">fit</span>(<span class="var">X_train</span>, <span class="var">y_train</span>)
+<span class="var">dummy_acc</span> = <span class="fn">accuracy_score</span>(<span class="var">y_test</span>, <span class="var">dummy</span>.<span class="fn">predict</span>(<span class="var">X_test</span>))
+<span class="var">dummy_f1</span>  = <span class="fn">f1_score</span>(<span class="var">y_test</span>, <span class="var">dummy</span>.<span class="fn">predict</span>(<span class="var">X_test</span>), average=<span class="st">'weighted'</span>)
+
+<span class="fn">print</span>(<span class="st">f"Dummy Accuracy: </span>{<span class="var">dummy_acc</span>:<span class="nm">.4f</span>}<span class="st">"</span>)
+<span class="fn">print</span>(<span class="st">f"Dummy F1:       </span>{<span class="var">dummy_f1</span>:<span class="nm">.4f</span>}<span class="st">"</span>)
+<span class="fn">print</span>(<span class="st">f"Best Model Acc: </span>{<span class="fn">accuracy_score</span>(<span class="var">y_test</span>, <span class="var">y_pred</span>):<span class="nm">.4f</span>}<span class="st">"</span>)
+<span class="fn">print</span>(<span class="st">"Improvement:    The model offers a meaningful improvement over the baseline."</span>)</code></pre>
+  </div>
+</section>
+
+<!-- ─── K-MEANS ─── -->
+<section class="section" id="kmeans">
+  <div class="section-header">
+    <div class="section-icon t6">🔵</div>
+    <h2 class="section-title">K-Means Clustering</h2>
+    <span class="section-tag t6">Unsupervised</span>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Select features, scale, train K-Means, print labels & centres</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="kw">from</span> <span class="cl">sklearn.cluster</span> <span class="kw">import</span> <span class="fn">KMeans</span>
+<span class="kw">from</span> <span class="cl">sklearn.preprocessing</span> <span class="kw">import</span> <span class="fn">StandardScaler</span>
+
+<span class="cm"># Select only the specified features</span>
+<span class="var">features</span>   = [<span class="st">'Alcohol'</span>, <span class="st">'Malic_Acid'</span>, <span class="st">'Ash_Alcanity'</span>, <span class="st">'Proanthocyanins'</span>, <span class="st">'Hue'</span>]
+<span class="var">df_cluster</span> = <span class="var">df</span>[<span class="var">features</span>].<span class="fn">copy</span>()
+
+<span class="cm"># Scale</span>
+<span class="var">scaler</span>       = <span class="fn">StandardScaler</span>()
+<span class="var">X_scaled</span>     = <span class="var">scaler</span>.<span class="fn">fit_transform</span>(<span class="var">df_cluster</span>)
+
+<span class="cm"># Train (use optimal k from silhouette / elbow)</span>
+<span class="var">optimal_k</span>    = <span class="nm">3</span>
+<span class="var">kmeans</span>       = <span class="fn">KMeans</span>(n_clusters=<span class="var">optimal_k</span>, random_state=<span class="nm">42</span>, n_init=<span class="nm">10</span>)
+<span class="var">labels</span>       = <span class="var">kmeans</span>.<span class="fn">fit_predict</span>(<span class="var">X_scaled</span>)
+<span class="var">centroids</span>    = <span class="var">kmeans</span>.<span class="var">cluster_centers_</span>
+
+<span class="fn">print</span>(<span class="st">"Labels:"</span>, <span class="var">labels</span>)
+<span class="fn">print</span>(<span class="st">"Cluster Centres:\n"</span>, <span class="var">centroids</span>)
+
+<span class="cm"># Add labels back to dataframe</span>
+<span class="var">df_cluster</span>[<span class="st">'Cluster'</span>] = <span class="var">labels</span></code></pre>
+  </div>
+</section>
+
+<!-- ─── ELBOW & SILHOUETTE ─── -->
+<section class="section" id="elbow-sil">
+  <div class="section-header">
+    <div class="section-icon t6">📐</div>
+    <h2 class="section-title">Elbow Curve & Silhouette Score</h2>
+    <span class="section-tag t6">Unsupervised</span>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Elbow curve (inertia / WCSS)</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="var">inertia</span> = []
+<span class="var">k_range</span> = <span class="fn">range</span>(<span class="nm">2</span>, <span class="nm">11</span>)
+
+<span class="kw">for</span> <span class="var">k</span> <span class="kw">in</span> <span class="var">k_range</span>:
+    <span class="var">km</span> = <span class="fn">KMeans</span>(n_clusters=<span class="var">k</span>, random_state=<span class="nm">42</span>, n_init=<span class="nm">10</span>)
+    <span class="var">km</span>.<span class="fn">fit</span>(<span class="var">X_scaled</span>)
+    <span class="var">inertia</span>.<span class="fn">append</span>(<span class="var">km</span>.<span class="var">inertia_</span>)
+
+<span class="var">plt</span>.<span class="fn">plot</span>(<span class="var">k_range</span>, <span class="var">inertia</span>, marker=<span class="st">'o'</span>)
+<span class="var">plt</span>.<span class="fn">xlabel</span>(<span class="st">'Number of Clusters (k)'</span>)
+<span class="var">plt</span>.<span class="fn">ylabel</span>(<span class="st">'Inertia (WCSS)'</span>)
+<span class="var">plt</span>.<span class="fn">title</span>(<span class="st">'Elbow Curve'</span>)
+<span class="var">plt</span>.<span class="fn">show</span>()</code></pre>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Silhouette score (find optimal k)</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="kw">from</span> <span class="cl">sklearn.metrics</span> <span class="kw">import</span> <span class="fn">silhouette_score</span>
+
+<span class="var">sil_scores</span> = []
+<span class="var">k_range</span>    = <span class="fn">range</span>(<span class="nm">2</span>, <span class="nm">11</span>)
+
+<span class="kw">for</span> <span class="var">k</span> <span class="kw">in</span> <span class="var">k_range</span>:
+    <span class="var">km</span>  = <span class="fn">KMeans</span>(n_clusters=<span class="var">k</span>, random_state=<span class="nm">42</span>, n_init=<span class="nm">10</span>)
+    <span class="var">lbl</span> = <span class="var">km</span>.<span class="fn">fit_predict</span>(<span class="var">X_scaled</span>)
+    <span class="var">sil_scores</span>.<span class="fn">append</span>(<span class="fn">silhouette_score</span>(<span class="var">X_scaled</span>, <span class="var">lbl</span>))
+
+<span class="var">plt</span>.<span class="fn">plot</span>(<span class="var">k_range</span>, <span class="var">sil_scores</span>, marker=<span class="st">'o'</span>, color=<span class="st">'green'</span>)
+<span class="var">plt</span>.<span class="fn">xlabel</span>(<span class="st">'Number of Clusters (k)'</span>)
+<span class="var">plt</span>.<span class="fn">ylabel</span>(<span class="st">'Silhouette Score'</span>)
+<span class="var">plt</span>.<span class="fn">title</span>(<span class="st">'Silhouette Scores for Different k'</span>)
+<span class="var">plt</span>.<span class="fn">show</span>()
+
+<span class="var">optimal_k</span> = <span class="var">k_range</span>[<span class="var">sil_scores</span>.<span class="fn">index</span>(<span class="fn">max</span>(<span class="var">sil_scores</span>))]
+<span class="fn">print</span>(<span class="st">f"Optimal k = </span>{<span class="var">optimal_k</span>}<span class="st"> (silhouette score = </span>{<span class="fn">max</span>(<span class="var">sil_scores</span>):<span class="nm">.4f</span>}<span class="st">)"</span>)</code></pre>
+  </div>
+</section>
+
+<!-- ─── HIERARCHICAL ─── -->
+<section class="section" id="hierarchical">
+  <div class="section-header">
+    <div class="section-icon t6">🌳</div>
+    <h2 class="section-title">Hierarchical Clustering</h2>
+    <span class="section-tag t6">Unsupervised</span>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Dendrogram (for theory / code questions)</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="kw">from</span> <span class="cl">scipy.cluster.hierarchy</span> <span class="kw">import</span> <span class="fn">dendrogram</span>, <span class="fn">linkage</span>
+<span class="kw">from</span> <span class="cl">scipy.spatial.distance</span> <span class="kw">import</span> <span class="fn">pdist</span>
+
+<span class="cm"># Example scatter data points from exam question</span>
+<span class="var">points</span> = {
+    <span class="st">'A'</span>: (<span class="nm">2.0</span>, <span class="nm">6.0</span>), <span class="st">'B'</span>: (<span class="nm">2.5</span>, <span class="nm">3.0</span>), <span class="st">'C'</span>: (<span class="nm">3.2</span>, <span class="nm">2.7</span>),
+    <span class="st">'D'</span>: (<span class="nm">4.0</span>, <span class="nm">4.0</span>), <span class="st">'E'</span>: (<span class="nm">4.5</span>, <span class="nm">4.0</span>), <span class="st">'F'</span>: (<span class="nm">4.5</span>, <span class="nm">5.5</span>)
+}
+<span class="kw">import</span> <span class="cl">numpy</span> <span class="kw">as</span> <span class="var">np</span>
+<span class="var">X_pts</span> = <span class="var">np</span>.<span class="fn">array</span>(<span class="fn">list</span>(<span class="var">points</span>.<span class="fn">values</span>()))
+<span class="var">labels</span> = <span class="fn">list</span>(<span class="var">points</span>.<span class="fn">keys</span>())
+
+<span class="cm"># Single linkage (minimum distance) — used in some papers</span>
+<span class="var">Z</span> = <span class="fn">linkage</span>(<span class="var">X_pts</span>, method=<span class="st">'single'</span>)   <span class="cm"># or 'complete', 'average', 'ward'</span>
+<span class="var">plt</span>.<span class="fn">figure</span>(figsize=(<span class="nm">8</span>, <span class="nm">4</span>))
+<span class="fn">dendrogram</span>(<span class="var">Z</span>, labels=<span class="var">labels</span>)
+<span class="var">plt</span>.<span class="fn">title</span>(<span class="st">'Dendrogram — Agglomerative Hierarchical Clustering'</span>)
+<span class="var">plt</span>.<span class="fn">ylabel</span>(<span class="st">'Distance'</span>)
+<span class="var">plt</span>.<span class="fn">show</span>()</code></pre>
+  </div>
+</section>
+
+<!-- ─── PCA ─── -->
+<section class="section" id="pca">
+  <div class="section-header">
+    <div class="section-icon t6">🔮</div>
+    <h2 class="section-title">Principal Component Analysis (PCA)</h2>
+    <span class="section-tag t6">Unsupervised</span>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Full PCA workflow: reduce to 2D and plot clusters</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="kw">from</span> <span class="cl">sklearn.decomposition</span> <span class="kw">import</span> <span class="fn">PCA</span>
+
+<span class="cm"># Reduce to 2 dimensions</span>
+<span class="var">pca</span>       = <span class="fn">PCA</span>(n_components=<span class="nm">2</span>)
+<span class="var">X_pca</span>     = <span class="var">pca</span>.<span class="fn">fit_transform</span>(<span class="var">X_scaled</span>)
+
+<span class="cm"># Print dimensions before / after</span>
+<span class="fn">print</span>(<span class="st">"Original dimensions:"</span>, <span class="var">X_scaled</span>.<span class="var">shape</span>)
+<span class="fn">print</span>(<span class="st">"PCA dimensions:     "</span>, <span class="var">X_pca</span>.<span class="var">shape</span>)
+
+<span class="cm"># Principal components and explained variance</span>
+<span class="fn">print</span>(<span class="st">"Principal components:\n"</span>, <span class="var">pca</span>.<span class="var">components_</span>)
+<span class="fn">print</span>(<span class="st">"Explained variance ratio:"</span>, <span class="var">pca</span>.<span class="var">explained_variance_ratio_</span>)
+<span class="fn">print</span>(<span class="st">f"Total variance explained: </span>{<span class="var">pca</span>.<span class="var">explained_variance_ratio_</span>.<span class="fn">sum</span>()*<span class="nm">100</span>:<span class="nm">.2f</span>}<span class="st">%"</span>)
+
+<span class="cm"># Seaborn scatter plot with cluster colours</span>
+<span class="var">pca_df</span> = <span class="var">pd</span>.<span class="fn">DataFrame</span>(<span class="var">X_pca</span>, columns=[<span class="st">'PC1'</span>, <span class="st">'PC2'</span>])
+<span class="var">pca_df</span>[<span class="st">'Cluster'</span>] = <span class="var">labels</span>
+
+<span class="var">plt</span>.<span class="fn">figure</span>(figsize=(<span class="nm">8</span>, <span class="nm">6</span>))
+<span class="var">sns</span>.<span class="fn">scatterplot</span>(x=<span class="st">'PC1'</span>, y=<span class="st">'PC2'</span>, hue=<span class="st">'Cluster'</span>,
+                palette=<span class="st">'tab10'</span>, data=<span class="var">pca_df</span>, s=<span class="nm">60</span>)
+<span class="var">plt</span>.<span class="fn">title</span>(<span class="st">'PCA — Clusters Visualised in 2D'</span>)
+<span class="var">plt</span>.<span class="fn">show</span>()</code></pre>
+  </div>
+</section>
+
+<!-- ─── PROBABILITY ─── -->
+<section class="section" id="probability">
+  <div class="section-header">
+    <div class="section-icon t8">🎲</div>
+    <h2 class="section-title">Probability Calculations</h2>
+    <span class="section-tag t8">Analysis</span>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Conditional probability (e.g. P(Diabetes | Female, AB+))</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="cm"># P(Medical Condition = Diabetes | Gender = Female AND Blood Type = AB+)</span>
+<span class="var">subset</span> = <span class="var">df</span>[
+    (<span class="var">df</span>[<span class="st">'Gender'</span>] == <span class="st">'Female'</span>) &
+    (<span class="var">df</span>[<span class="st">'Blood Type'</span>] == <span class="st">'AB+'</span>)
+]
+<span class="var">prob</span> = (<span class="var">subset</span>[<span class="st">'Medical Condition'</span>] == <span class="st">'Diabetes'</span>).<span class="fn">mean</span>() * <span class="nm">100</span>
+<span class="fn">print</span>(<span class="st">f"Probability: </span>{<span class="fn">round</span>(<span class="var">prob</span>, <span class="nm">1</span>)}<span class="st">%"</span>)</code></pre>
+  </div>
+</section>
+
+<!-- ─── GINI IMPURITY ─── -->
+<section class="section" id="gini">
+  <div class="section-header">
+    <div class="section-icon t8">🌲</div>
+    <h2 class="section-title">Gini Impurity (Decision Tree Theory)</h2>
+    <span class="section-tag t8">Theory</span>
+  </div>
+
+  <div class="note"><strong>Formula:</strong> Gini(node) = 1 − Σ(pᵢ²) &nbsp;&nbsp;|&nbsp;&nbsp; Weighted Gini = (n_left/n_total)×Gini_left + (n_right/n_total)×Gini_right &nbsp;&nbsp;|&nbsp;&nbsp; Choose feature with the <strong>lowest</strong> weighted Gini.</div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Calculate Gini Impurity for HBP / Age < 48 example</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="cm"># Data from exam: 7 records, HA = [Y,N,N,N,Y,N,Y]
+# HBP = Y: rows 1,3,5,6,7  → HA: Y,N,Y,N,Y  → 3 Yes, 2 No
+# HBP = N: rows 2,4         → HA: N,N         → 0 Yes, 2 No</span>
+
+<span class="kw">def</span> <span class="fn">gini</span>(<span class="var">p_yes</span>, <span class="var">total</span>):
+    <span class="var">p1</span> = <span class="var">p_yes</span> / <span class="var">total</span>
+    <span class="var">p0</span> = <span class="nm">1</span> - <span class="var">p1</span>
+    <span class="kw">return</span> <span class="nm">1</span> - (<span class="var">p1</span>**<span class="nm">2</span> + <span class="var">p0</span>**<span class="nm">2</span>)
+
+<span class="cm"># HBP split</span>
+<span class="var">g_hbp_yes</span> = <span class="fn">gini</span>(<span class="nm">3</span>, <span class="nm">5</span>)      <span class="cm"># 5 records where HBP=Yes</span>
+<span class="var">g_hbp_no</span>  = <span class="fn">gini</span>(<span class="nm">0</span>, <span class="nm">2</span>)      <span class="cm"># 2 records where HBP=No</span>
+<span class="var">weighted_hbp</span> = (<span class="nm">5</span>/<span class="nm">7</span>)*<span class="var">g_hbp_yes</span> + (<span class="nm">2</span>/<span class="nm">7</span>)*<span class="var">g_hbp_no</span>
+<span class="fn">print</span>(<span class="st">f"Weighted Gini (HBP):     </span>{<span class="var">weighted_hbp</span>:<span class="nm">.4f</span>}<span class="st">"</span>)
+
+<span class="cm"># Age split: Age<48=Y: rows 1,2,3,4,6 → HA: Y,N,N,N,N → 1Y,4N
+#            Age<48=N: rows 5,7         → HA: Y,Y         → 2Y,0N</span>
+<span class="var">g_age_yes</span> = <span class="fn">gini</span>(<span class="nm">1</span>, <span class="nm">5</span>)
+<span class="var">g_age_no</span>  = <span class="fn">gini</span>(<span class="nm">2</span>, <span class="nm">2</span>)
+<span class="var">weighted_age</span> = (<span class="nm">5</span>/<span class="nm">7</span>)*<span class="var">g_age_yes</span> + (<span class="nm">2</span>/<span class="nm">7</span>)*<span class="var">g_age_no</span>
+<span class="fn">print</span>(<span class="st">f"Weighted Gini (Age<48):  </span>{<span class="var">weighted_age</span>:<span class="nm">.4f</span>}<span class="st">"</span>)
+
+<span class="cm"># The feature with the LOWER Gini is the root</span>
+<span class="var">root</span> = <span class="st">"HBP"</span> <span class="kw">if</span> <span class="var">weighted_hbp</span> < <span class="var">weighted_age</span> <span class="kw">else</span> <span class="st">"Age < 48"</span>
+<span class="fn">print</span>(<span class="st">f"Root feature: </span>{<span class="var">root</span>}<span class="st">"</span>)</code></pre>
+  </div>
+</section>
+
+<!-- ─── TEXT NLP ─── -->
+<section class="section" id="text-nlp">
+  <div class="section-header">
+    <div class="section-icon t8">📝</div>
+    <h2 class="section-title">Text Preprocessing for Sentiment Analysis</h2>
+    <span class="section-tag t8">NLP</span>
+  </div>
+
+  <div class="note"><strong>Key steps to know for theory questions:</strong> Lowercasing → Remove punctuation/special chars → Tokenisation → Stop word removal → Stemming/Lemmatisation → Vectorisation (TF-IDF or BoW)</div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Full NLP preprocessing pipeline</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="kw">import</span> <span class="cl">re</span>
+<span class="kw">import</span> <span class="cl">nltk</span>
+<span class="kw">from</span> <span class="cl">nltk.corpus</span> <span class="kw">import</span> <span class="var">stopwords</span>
+<span class="kw">from</span> <span class="cl">nltk.stem</span> <span class="kw">import</span> <span class="fn">PorterStemmer</span>, <span class="fn">WordNetLemmatizer</span>
+<span class="kw">from</span> <span class="cl">nltk.tokenize</span> <span class="kw">import</span> <span class="fn">word_tokenize</span>
+<span class="var">nltk</span>.<span class="fn">download</span>(<span class="st">'stopwords'</span>)
+<span class="var">nltk</span>.<span class="fn">download</span>(<span class="st">'punkt'</span>)
+<span class="var">nltk</span>.<span class="fn">download</span>(<span class="st">'wordnet'</span>)
+
+<span class="var">stop_words</span> = <span class="fn">set</span>(<span class="var">stopwords</span>.<span class="fn">words</span>(<span class="st">'english'</span>))
+<span class="var">stemmer</span>    = <span class="fn">PorterStemmer</span>()
+<span class="var">lemmatizer</span> = <span class="fn">WordNetLemmatizer</span>()
+
+<span class="kw">def</span> <span class="fn">preprocess_text</span>(<span class="var">text</span>):
+    <span class="var">text</span> = <span class="var">text</span>.<span class="fn">lower</span>()                              <span class="cm"># 1. Lowercase</span>
+    <span class="var">text</span> = <span class="var">re</span>.<span class="fn">sub</span>(<span class="st">r'[^a-z\s]'</span>, <span class="st">''</span>, <span class="var">text</span>)            <span class="cm"># 2. Remove punctuation</span>
+    <span class="var">tokens</span> = <span class="fn">word_tokenize</span>(<span class="var">text</span>)                     <span class="cm"># 3. Tokenise</span>
+    <span class="var">tokens</span> = [<span class="var">t</span> <span class="kw">for</span> <span class="var">t</span> <span class="kw">in</span> <span class="var">tokens</span> <span class="kw">if</span> <span class="var">t</span> <span class="kw">not in</span> <span class="var">stop_words</span>]  <span class="cm"># 4. Remove stopwords</span>
+    <span class="var">tokens</span> = [<span class="var">lemmatizer</span>.<span class="fn">lemmatize</span>(<span class="var">t</span>) <span class="kw">for</span> <span class="var">t</span> <span class="kw">in</span> <span class="var">tokens</span>]  <span class="cm"># 5. Lemmatise</span>
+    <span class="kw">return</span> <span class="st">' '</span>.<span class="fn">join</span>(<span class="var">tokens</span>)
+
+<span class="var">df</span>[<span class="st">'clean_text'</span>] = <span class="var">df</span>[<span class="st">'review'</span>].<span class="fn">apply</span>(<span class="var">preprocess_text</span>)
+
+<span class="cm"># 6. Vectorise (TF-IDF)</span>
+<span class="kw">from</span> <span class="cl">sklearn.feature_extraction.text</span> <span class="kw">import</span> <span class="fn">TfidfVectorizer</span>
+<span class="var">tfidf</span> = <span class="fn">TfidfVectorizer</span>()
+<span class="var">X</span>     = <span class="var">tfidf</span>.<span class="fn">fit_transform</span>(<span class="var">df</span>[<span class="st">'clean_text'</span>])</code></pre>
+  </div>
+</section>
+
+<!-- ─── EXPORT CSV ─── -->
+<section class="section" id="export">
+  <div class="section-header">
+    <div class="section-icon t8">💾</div>
+    <h2 class="section-title">Export to CSV</h2>
+    <span class="section-tag t8">Output</span>
+  </div>
+
+  <div class="code-card">
+    <div class="code-card-header">
+      <h3>Write cleaned dataframe to CSV</h3>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><code><span class="var">df</span>.<span class="fn">to_csv</span>(<span class="st">'clean_aviation_log.csv'</span>, index=<span class="kw">False</span>)
+<span class="fn">print</span>(<span class="st">"File saved successfully."</span>)</code></pre>
+  </div>
+</section>
+
+</main>
+</div>
+
+<script>
+// ── Copy to clipboard ──
+function copyCode(btn) {
+  const pre = btn.closest('.code-card').querySelector('pre');
+  const text = pre.innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1800);
+  });
+}
+
+// ── Search filter ──
+const searchInput = document.getElementById('search');
+const sections    = document.querySelectorAll('.section');
+
+searchInput.addEventListener('input', () => {
+  const q = searchInput.value.toLowerCase().trim();
+  sections.forEach(sec => {
+    if (!q) { sec.classList.remove('hidden'); return; }
+    const text = sec.innerText.toLowerCase();
+    sec.classList.toggle('hidden', !text.includes(q));
+  });
+});
+
+// ── Active nav link on scroll ──
+const navLinks = document.querySelectorAll('nav a');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      navLinks.forEach(l => l.classList.remove('active'));
+      const id = e.target.id;
+      const link = document.querySelector(`nav a[href="#${id}"]`);
+      if (link) link.classList.add('active');
+    }
+  });
+}, { threshold: 0.2, rootMargin: '-60px 0px -70% 0px' });
+
+sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
